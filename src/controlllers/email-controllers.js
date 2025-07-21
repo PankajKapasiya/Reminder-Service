@@ -1,34 +1,54 @@
 const {sendbasicmail} = require('../service/email-service');
 
-class Emailcontrollers{
+const TickertService = require('../service/email-service');
 
-    constructor(){
+const create = async (req, res) =>{
+    try{
+        console.log(req.body);
+        const response = await TickertService.createNotification(req.body);
+
+        return res.status(201).json({
+            message :"Succesfully created",
+            err :{},
+            data : response,
+            success : true
+        });
     }
-    async send (req, res){
-        try{
-            const response=  await sendbasicmail(req.body.from, req.body.to, req.body.subject, req.body.mailbody);
-            // console.log(response);
-            return res.status(200).json({
-                message : 'succesfully send an email',
-                success : true,
-                err :{},
-                data : 'send an email'
-            });
-
-        }
-        catch(error){
-            console.log('something went wrong in email controller');
-            console.log(error);
-
-            
-            return res.status(500).json({
-                message : 'Unable to send an email',
-                err : error,
-                success : false,
-                data : {}
-            })
-        }
+    catch(error){
+        console.log("Something went wrong in Controller");
+        
+        return res.status(500).json({
+            message : "Something went wrong in Controller",
+            err : error,
+            success : false,
+            data :{}
+        });
     }
 }
 
-module.exports= Emailcontrollers;
+const fetch = async (req, res) =>{
+    try{
+        const response = await TickertService.fetchPendingEmail(req.body);
+        
+        return res.status(201).json({
+            message :"Succesfully created",
+            err :{},
+            data : response,
+            success : true
+        });
+    }
+    catch(error){
+        console.log("Something went wrong in Controller");
+        return res.status(500).json({
+            message : "Something went wrong in Controller",
+            err : error,
+            success : false,
+            data :{}
+        });
+    }
+}
+module.exports= {
+    create,
+    fetch
+
+};
